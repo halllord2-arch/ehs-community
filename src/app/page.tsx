@@ -1,69 +1,83 @@
-import Image from "next/image";
+import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
 
-export default function Home() {
+export default async function HomePage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-gray-50">
+      {/* 상단 네비게이션 */}
+      <nav className="bg-white border-b border-gray-200 px-4 py-3">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <Link href="/" className="text-lg font-bold text-blue-700">EHS 커뮤니티</Link>
+          <div className="flex items-center gap-3">
+            {user ? (
+              <>
+                <Link href="/post/new" className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                  + 위험요소 게시
+                </Link>
+                <Link href="/verify" className="text-sm text-gray-600 hover:text-gray-900">검증 큐</Link>
+                <Link href="/profile" className="text-sm text-gray-600 hover:text-gray-900">마이페이지</Link>
+              </>
+            ) : (
+              <>
+                <Link href="/login" className="text-sm text-gray-600 hover:text-gray-900">로그인</Link>
+                <Link href="/signup" className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                  회원가입
+                </Link>
+              </>
+            )}
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </nav>
+
+      {/* 히어로 섹션 */}
+      <div className="max-w-5xl mx-auto px-4 py-16 text-center">
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          현장 위험요소를 함께 검증합니다
+        </h1>
+        <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+          안전관리자들이 현장에서 발견한 위험요소를 공유하고,<br />
+          동료 검증자들과 함께 적절성을 판단해 산업 안전 데이터를 축적합니다.
+        </p>
+
+        {!user && (
+          <div className="flex gap-3 justify-center">
+            <Link href="/signup" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors">
+              지금 참여하기
+            </Link>
+            <Link href="/login" className="bg-white hover:bg-gray-50 text-gray-700 font-semibold px-6 py-3 rounded-lg border border-gray-300 transition-colors">
+              로그인
+            </Link>
+          </div>
+        )}
+
+        {user && (
+          <Link href="/post/new" className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg transition-colors">
+            위험요소 게시하기
+          </Link>
+        )}
+      </div>
+
+      {/* 기능 카드 */}
+      <div className="max-w-5xl mx-auto px-4 pb-16 grid md:grid-cols-3 gap-6">
+        <div className="bg-white rounded-xl p-6 border border-gray-200">
+          <div className="text-3xl mb-3">📸</div>
+          <h3 className="font-semibold text-gray-900 mb-2">위험요소 게시</h3>
+          <p className="text-sm text-gray-500">현장 사진과 설명으로 위험요소를 공유하고 즉시 +5 포인트를 받으세요.</p>
         </div>
-      </main>
+        <div className="bg-white rounded-xl p-6 border border-gray-200">
+          <div className="text-3xl mb-3">✅</div>
+          <h3 className="font-semibold text-gray-900 mb-2">동료 검증</h3>
+          <p className="text-sm text-gray-500">같은 산업의 검증자들이 게시물을 검토하고 적절성을 판단합니다.</p>
+        </div>
+        <div className="bg-white rounded-xl p-6 border border-gray-200">
+          <div className="text-3xl mb-3">🏆</div>
+          <h3 className="font-semibold text-gray-900 mb-2">등급 & 포인트</h3>
+          <p className="text-sm text-gray-500">활동 실적(Activity Record)을 쌓아 Observer → Master 등급까지 성장하세요.</p>
+        </div>
+      </div>
     </div>
-  );
+  )
 }

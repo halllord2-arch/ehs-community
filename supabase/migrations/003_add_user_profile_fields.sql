@@ -1,0 +1,4 @@
+ALTER TABLE public.users
+  ADD COLUMN company      TEXT NOT NULL DEFAULT '',
+  ADD COLUMN job_role     TEXT NOT NULL DEFAULT '',
+  ADD COLUMN career_years INT  NOT NULL DEFAULT 0;
