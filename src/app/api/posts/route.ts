@@ -70,8 +70,10 @@ export async function POST(request: Request) {
 
   const { data: { publicUrl } } = uploadClient.storage.from('post-images').getPublicUrl(path)
 
-  // 게시물 저장
-  const { data: post, error: insertError } = await supabase
+  // 게시물 저장 + 포인트 지급 (service role로 RLS 우회)
+  const serviceClient = await createServiceClient()
+
+  const { data: post, error: insertError } = await serviceClient
     .from('posts')
     .insert({
       user_id: user.id,
@@ -86,11 +88,8 @@ export async function POST(request: Request) {
     .single()
 
   if (insertError) {
-    return NextResponse.json({ error: '게시물 저장에 실패했습니다.' }, { status: 500 })
+    return NextResponse.json({ error: `게시물 저장에 실패했습니다: ${insertError.message}` }, { status: 500 })
   }
-
-  // 게시 포인트 지급
-  const serviceClient = await createServiceClient()
   const { data: pointConfig } = await serviceClient
     .from('points_config')
     .select('point_value')
