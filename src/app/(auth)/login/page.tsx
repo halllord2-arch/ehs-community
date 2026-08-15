@@ -1,12 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -36,6 +37,12 @@ export default function LoginPage() {
         <h1 className="text-2xl font-bold text-gray-900 mb-2">EHS 커뮤니티 로그인</h1>
         <p className="text-sm text-gray-500 mb-6">안전관리자 전용 플랫폼</p>
 
+        {searchParams.get('reset') === '1' && (
+          <div className="bg-green-50 border border-green-200 rounded-lg px-4 py-3 mb-4">
+            <p className="text-sm text-green-700">비밀번호가 변경되었습니다. 새 비밀번호로 로그인해주세요.</p>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">이메일</label>
@@ -64,6 +71,12 @@ export default function LoginPage() {
           {error && (
             <p className="text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{error}</p>
           )}
+
+          <div className="text-right">
+            <Link href="/forgot-password" className="text-xs text-gray-400 hover:text-blue-600">
+              비밀번호를 잊으셨나요?
+            </Link>
+          </div>
 
           <button
             type="submit"
