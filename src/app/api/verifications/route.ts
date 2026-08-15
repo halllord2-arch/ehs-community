@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   }
 
   // 일일 검증 포인트 한도 확인 (30점)
-  const serviceClient = await createServiceClient()
+  const serviceClient = createServiceClient()
   const today = new Date().toISOString().split('T')[0]
   const { data: todayPoints } = await serviceClient
     .from('point_transactions')

@@ -30,7 +30,7 @@ export async function POST(request: Request) {
 
   // 서비스 롤로 프로필 즉시 저장
   if (data.user) {
-    const serviceClient = await createServiceClient()
+    const serviceClient = createServiceClient()
     await serviceClient.from('users').update({
       name, company, job_role, career_years, industry_tags,
     }).eq('id', data.user.id)

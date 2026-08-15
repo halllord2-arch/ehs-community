@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: '필수 항목 누락' }, { status: 400 })
   }
 
-  const serviceClient = await createServiceClient()
+  const serviceClient = createServiceClient()
 
   const { error } = await serviceClient
     .from('users')

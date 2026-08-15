@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     for (const post of existingPosts) {
       if (post.image_phash && isDuplicate(newHash, post.image_phash)) {
         // 중복 패널티 포인트 차감
-        const serviceClient = await createServiceClient()
+        const serviceClient = createServiceClient()
         await serviceClient.from('point_transactions').insert({
           user_id: user.id,
           amount: -20,
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
   }
 
   // Supabase Storage 업로드 (service role로 RLS 우회)
-  const uploadClient = await createServiceClient()
+  const uploadClient = createServiceClient()
   const ext = file.name.split('.').pop()
   const path = `posts/${user.id}/${Date.now()}.${ext}`
 
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
   const { data: { publicUrl } } = uploadClient.storage.from('post-images').getPublicUrl(path)
 
   // 게시물 저장 + 포인트 지급 (service role로 RLS 우회)
-  const serviceClient = await createServiceClient()
+  const serviceClient = createServiceClient()
 
   const { data: post, error: insertError } = await serviceClient
     .from('posts')
