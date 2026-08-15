@@ -6,20 +6,6 @@ import Link from 'next/link'
 const INDUSTRY_OPTIONS = ['제조', '건설', '물류', '화학', '식품', '에너지', '조선', '광업', '기타']
 const JOB_ROLE_OPTIONS = ['안전', '보건', '환경', '기타']
 
-const FREE_EMAIL_DOMAINS = [
-  'gmail.com', 'googlemail.com',
-  'naver.com', 'daum.net', 'hanmail.net', 'kakao.com',
-  'outlook.com', 'hotmail.com', 'live.com',
-  'yahoo.com', 'yahoo.co.kr',
-  'icloud.com', 'me.com', 'mac.com',
-  'nate.com', 'paran.com',
-]
-
-function isCompanyEmail(email: string): boolean {
-  const domain = email.split('@')[1]?.toLowerCase()
-  if (!domain) return false
-  return !FREE_EMAIL_DOMAINS.includes(domain)
-}
 
 const CAREER_OPTIONS = [
   { value: 1, label: '1년 미만' },
@@ -65,10 +51,7 @@ export default function SignupPage() {
     e.preventDefault()
     setError(null)
 
-    if (!isCompanyEmail(form.email)) {
-      setError('회사 이메일로만 가입할 수 있습니다. (Gmail, Naver 등 개인 이메일 불가)')
-      return
-    }
+
     if (!form.company.trim()) {
       setError('회사명을 입력해주세요.')
       return
@@ -139,11 +122,9 @@ export default function SignupPage() {
         <h1 className="text-2xl font-bold text-gray-900 mb-1">회원가입</h1>
         <p className="text-sm text-gray-500 mb-3">안전관리자 커뮤니티에 참여하세요</p>
         <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 mb-4">
-          <p className="text-sm text-blue-800 font-medium">🏢 회사 이메일 인증 필수</p>
+          <p className="text-sm text-blue-800 font-medium">📧 이메일 인증 필수</p>
           <p className="text-xs text-blue-600 mt-1">
-            본 플랫폼은 현직 안전관리자만 가입할 수 있습니다.<br />
-            회사 이메일(@company.com)로 가입 후 인증 메일을 확인해야 로그인이 가능합니다.<br />
-            Gmail, Naver, Kakao 등 개인 이메일은 사용할 수 없습니다.
+            가입 후 이메일로 발송된 인증 링크를 클릭해야 로그인이 가능합니다.
           </p>
         </div>
 
@@ -164,7 +145,7 @@ export default function SignupPage() {
           {/* 회사 이메일 */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              회사 이메일 <span className="text-red-500">*</span>
+              이메일 <span className="text-red-500">*</span>
             </label>
             <input
               type="email"
@@ -172,9 +153,8 @@ export default function SignupPage() {
               value={form.email}
               onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="name@company.com"
+              placeholder="name@example.com"
             />
-            <p className="text-xs text-gray-400 mt-1">Gmail, Naver 등 개인 이메일은 사용할 수 없습니다.</p>
           </div>
 
           {/* 비밀번호 */}

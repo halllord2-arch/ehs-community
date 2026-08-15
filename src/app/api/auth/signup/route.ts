@@ -1,15 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient, createServiceClient } from '@/lib/supabase/server'
 
-const FREE_EMAIL_DOMAINS = [
-  'gmail.com', 'googlemail.com',
-  'naver.com', 'daum.net', 'hanmail.net', 'kakao.com',
-  'outlook.com', 'hotmail.com', 'live.com',
-  'yahoo.com', 'yahoo.co.kr',
-  'icloud.com', 'me.com', 'mac.com',
-  'nate.com', 'paran.com',
-]
-
 export async function POST(request: Request) {
   const origin = new URL(request.url).origin
 
@@ -17,12 +8,6 @@ export async function POST(request: Request) {
     email, password, name, company,
     job_role, career_years, industry_tags,
   } = await request.json()
-
-  // 회사 이메일 검증 (서버에서도 재검증)
-  const domain = email?.split('@')[1]?.toLowerCase()
-  if (!domain || FREE_EMAIL_DOMAINS.includes(domain)) {
-    return NextResponse.json({ error: '회사 이메일로만 가입할 수 있습니다.' }, { status: 400 })
-  }
 
   if (!name || !company || !job_role || !career_years || !industry_tags?.length) {
     return NextResponse.json({ error: '필수 항목이 누락되었습니다.' }, { status: 400 })
