@@ -92,11 +92,11 @@ export default function SignupPage() {
     setLoading(true)
     const supabase = createClient()
 
-    const { error: signUpError } = await supabase.auth.signUp({
+    // signUp에는 ASCII만 전달 (한글이 헤더에 들어가면 ISO-8859-1 오류 발생)
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
       options: {
-        data: { name: form.name },
         emailRedirectTo: `${window.location.origin}/api/auth/callback`,
       },
     })
@@ -107,15 +107,27 @@ export default function SignupPage() {
       return
     }
 
-    // 트리거로 생성된 users 레코드에 추가 정보 업데이트
-    const { data: { user } } = await supabase.auth.getUser()
-    if (user) {
-      await supabase.from('users').update({
-        company: form.company,
-        job_role: form.job_roles.join(', '),
-        career_years: form.career_years,
-        industry_tags: form.industry_tags,
-      }).eq('id', user.id)
+    // 프로필 정보는 service role API를 통해 저장 (RLS 우회, 한글 JSON body로 전송)
+    const userId = signUpData.user?.id
+    if (userId) {
+      const res = await fetch('/api/auth/setup-profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: userId,
+          name: form.name,
+          company: form.company,
+          job_role: form.job_roles.join(', '),
+          career_years: form.career_years,
+          industry_tags: form.industry_tags,
+        }),
+      })
+      if (!res.ok) {
+        const json = await res.json()
+        setError(json.error ?? '프로필 저장에 실패했습니다.')
+        setLoading(false)
+        return
+      }
     }
 
     setSuccess(true)
