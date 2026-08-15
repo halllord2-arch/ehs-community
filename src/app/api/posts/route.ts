@@ -55,19 +55,20 @@ export async function POST(request: Request) {
     }
   }
 
-  // Supabase Storage 업로드
+  // Supabase Storage 업로드 (service role로 RLS 우회)
+  const uploadClient = await createServiceClient()
   const ext = file.name.split('.').pop()
   const path = `posts/${user.id}/${Date.now()}.${ext}`
 
-  const { error: uploadError } = await supabase.storage
+  const { error: uploadError } = await uploadClient.storage
     .from('post-images')
     .upload(path, buffer, { contentType: file.type })
 
   if (uploadError) {
-    return NextResponse.json({ error: '이미지 업로드에 실패했습니다.' }, { status: 500 })
+    return NextResponse.json({ error: `이미지 업로드에 실패했습니다: ${uploadError.message}` }, { status: 500 })
   }
 
-  const { data: { publicUrl } } = supabase.storage.from('post-images').getPublicUrl(path)
+  const { data: { publicUrl } } = uploadClient.storage.from('post-images').getPublicUrl(path)
 
   // 게시물 저장
   const { data: post, error: insertError } = await supabase

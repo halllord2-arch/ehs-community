@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
 const INDUSTRY_OPTIONS = ['제조', '건설', '물류', '화학', '식품', '에너지', '조선', '광업', '기타']
-const HAZARD_TYPES = ['끼임', '추락', '화재', '화학물질', '전기', '폭발', '질식', '근골격계', '기타']
+const HAZARD_TYPES = ['끼임', '추락', '충돌', '화재', '화학물질', '전기', '폭발', '질식', '근골격계', '기타']
 
 export default function PostNewPage() {
   const router = useRouter()
