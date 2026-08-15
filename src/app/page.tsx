@@ -108,6 +108,14 @@ export default async function HomePage() {
           </Link>
         </div>
       )}
+
+      {/* 푸터 */}
+      <footer className="border-t border-gray-200 mt-12 py-6 px-4 text-center text-xs text-gray-400">
+        <p>© 2026 EHS 커뮤니티. All rights reserved.</p>
+        <p className="mt-1">
+          <Link href="/privacy" className="hover:text-gray-600 underline">개인정보처리방침</Link>
+        </p>
+      </footer>
     </div>
   )
 }

@@ -256,6 +256,11 @@ export default function SignupPage() {
           이미 계정이 있으신가요?{' '}
           <Link href="/login" className="text-blue-600 hover:underline">로그인</Link>
         </p>
+        <p className="mt-3 text-xs text-center text-gray-400">
+          가입하면{' '}
+          <Link href="/privacy" className="underline hover:text-gray-600">개인정보처리방침</Link>
+          에 동의한 것으로 간주됩니다.
+        </p>
       </div>
     </div>
   )
