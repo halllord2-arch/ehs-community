@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const INDUSTRIES = ['전체', '제조', '건설', '물류', '화학', '식품', '에너지', '조선', '광업', '기타']
 
@@ -70,7 +71,7 @@ export default function HomeFeed({ posts }: { posts: Post[] }) {
             const roleLevel = post.users?.role_level ?? 'observer'
 
             return (
-              <div key={post.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+              <Link key={post.id} href={`/post/${post.id}`} className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow block">
                 {/* 이미지 */}
                 <div className="relative w-full aspect-video bg-gray-100">
                   <Image
@@ -114,7 +115,7 @@ export default function HomeFeed({ posts }: { posts: Post[] }) {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             )
           })}
         </div>
