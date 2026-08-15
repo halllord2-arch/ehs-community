@@ -1,9 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
 
 const INDUSTRY_OPTIONS = ['제조', '건설', '물류', '화학', '식품', '에너지', '조선', '광업', '기타']
 const JOB_ROLE_OPTIONS = ['안전', '보건', '환경', '기타']
@@ -32,7 +30,6 @@ const CAREER_OPTIONS = [
 ]
 
 export default function SignupPage() {
-  const router = useRouter()
   const [form, setForm] = useState({
     email: '',
     password: '',
@@ -90,44 +87,27 @@ export default function SignupPage() {
     }
 
     setLoading(true)
-    const supabase = createClient()
 
-    // signUp에는 ASCII만 전달 (한글이 헤더에 들어가면 ISO-8859-1 오류 발생)
-    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-      email: form.email,
-      password: form.password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/api/auth/callback`,
-      },
+    // 모든 처리를 서버 API에서 수행 → 브라우저 ISO-8859-1 헤더 제한 우회
+    const res = await fetch('/api/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: form.email,
+        password: form.password,
+        name: form.name,
+        company: form.company,
+        job_role: form.job_roles.join(', '),
+        career_years: form.career_years,
+        industry_tags: form.industry_tags,
+      }),
     })
 
-    if (signUpError) {
-      setError(signUpError.message)
+    const json = await res.json()
+    if (!res.ok) {
+      setError(json.error ?? '회원가입에 실패했습니다.')
       setLoading(false)
       return
-    }
-
-    // 프로필 정보는 service role API를 통해 저장 (RLS 우회, 한글 JSON body로 전송)
-    const userId = signUpData.user?.id
-    if (userId) {
-      const res = await fetch('/api/auth/setup-profile', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user_id: userId,
-          name: form.name,
-          company: form.company,
-          job_role: form.job_roles.join(', '),
-          career_years: form.career_years,
-          industry_tags: form.industry_tags,
-        }),
-      })
-      if (!res.ok) {
-        const json = await res.json()
-        setError(json.error ?? '프로필 저장에 실패했습니다.')
-        setLoading(false)
-        return
-      }
     }
 
     setSuccess(true)
