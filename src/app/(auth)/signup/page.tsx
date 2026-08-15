@@ -101,15 +101,14 @@ export default function SignupPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="w-full max-w-md bg-white rounded-xl shadow-sm p-8 text-center">
-          <div className="text-5xl mb-4">📧</div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">인증 메일을 확인해주세요</h2>
+          <div className="text-5xl mb-4">✅</div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">회원가입 완료!</h2>
           <p className="text-sm text-gray-500 mb-4">
-            <strong>{form.email}</strong> 으로 인증 링크를 발송했습니다.<br />
-            메일의 링크를 클릭하면 로그인할 수 있습니다.
+            <strong>{form.email}</strong> 으로 가입되었습니다.<br />
+            바로 로그인할 수 있습니다.
           </p>
-          <p className="text-xs text-gray-400">스팸 폴더도 확인해보세요.</p>
-          <Link href="/login" className="mt-6 inline-block text-sm text-blue-600 hover:underline">
-            로그인 페이지로 이동
+          <Link href="/login" className="mt-2 inline-block bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-6 py-2 rounded-lg transition-colors">
+            로그인하기
           </Link>
         </div>
       </div>
@@ -121,13 +120,6 @@ export default function SignupPage() {
       <div className="w-full max-w-md bg-white rounded-xl shadow-sm p-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-1">회원가입</h1>
         <p className="text-sm text-gray-500 mb-3">안전관리자 커뮤니티에 참여하세요</p>
-        <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 mb-4">
-          <p className="text-sm text-blue-800 font-medium">📧 이메일 인증 필수</p>
-          <p className="text-xs text-blue-600 mt-1">
-            가입 후 이메일로 발송된 인증 링크를 클릭해야 로그인이 가능합니다.
-          </p>
-        </div>
-
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* 이름 */}
           <div>

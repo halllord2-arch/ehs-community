@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import type { RoleLevel } from '@/types/database'
+import LogoutButton from '@/components/LogoutButton'
 
 const ROLE_LABEL: Record<RoleLevel, string> = {
   observer: 'Observer', contributor: 'Contributor',
@@ -28,11 +29,6 @@ const REASON_LABEL: Record<string, string> = {
   verify_consensus_bonus: '검증 합의 보너스',
   duplicate_penalty: '중복 게시 패널티',
   low_quality_penalty: '저품질 패널티',
-}
-
-async function signOut() {
-  'use server'
-  // 로그아웃은 클라이언트에서 처리
 }
 
 export default async function ProfilePage() {
@@ -182,12 +178,3 @@ export default async function ProfilePage() {
   )
 }
 
-function LogoutButton() {
-  return (
-    <form action="/api/auth/logout" method="POST">
-      <button type="submit" className="w-full text-sm text-gray-400 hover:text-gray-600 py-3">
-        로그아웃
-      </button>
-    </form>
-  )
-}
